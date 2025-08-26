@@ -2585,7 +2585,17 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script>
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // إخفاء جميع الأقسام
+                document.querySelectorAll(".dashboard").forEach(dashboard => {
+                    dashboard.style.display = "none";
+                });
+
+                // إظهار قسم تسجيل الدخول فقط
+                document.getElementById("loginSection").style.display = "block";
+            });
+        </script>
         // User data and permissions
         const users = {
             'director': {
