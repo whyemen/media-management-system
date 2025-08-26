@@ -108,6 +108,10 @@
             display: none;
         }
 
+        #loginSection {
+            display: block;
+        }
+
         .dashboard.active {
             display: block;
         }
@@ -5421,8 +5425,11 @@
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            // Load saved entity mappings
-            loadFromLocalStorage();
+            // إخفاء جميع لوحات التحكم وعرض نموذج تسجيل الدخول عند تحميل الصفحة
+            document.querySelectorAll(".dashboard").forEach(dashboard => {
+                dashboard.classList.remove("active");
+            });
+            document.getElementById("loginForm").style.display = "block";
             
             // Load custom media options
             updateWebsiteOptions();
