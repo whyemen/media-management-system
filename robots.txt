@@ -1,0 +1,15 @@
+# robots.txt لنظام إدارة الرصد الإعلامي
+
+# منع فهرسة الموقع من محركات البحث لأسباب أمنية
+User-agent: *
+Disallow: /
+
+# منع الوصول للملفات الحساسة
+Disallow: /js/
+Disallow: /css/
+Disallow: /.htaccess
+Disallow: /README.md
+
+# معلومات الموقع
+# Sitemap: https://yoursite.com/sitemap.xml
+

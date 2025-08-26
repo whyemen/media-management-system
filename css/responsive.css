@@ -1,0 +1,319 @@
+/* تحسينات التصميم المتجاوب */
+
+/* الشاشات الكبيرة جداً */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .action-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* الشاشات المتوسطة */
+@media (max-width: 992px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .header p {
+        font-size: 1rem;
+    }
+    
+    .dashboard-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .action-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .modal-content {
+        width: 95%;
+    }
+}
+
+/* الأجهزة اللوحية */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .login-container {
+        padding: 30px 20px;
+    }
+    
+    .dashboard-content {
+        padding: 20px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .action-buttons {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .form-group.half-width {
+        flex: 1;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-button {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .notification-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .notification-btn {
+        width: 100%;
+    }
+    
+    .path-selection {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+}
+
+/* الهواتف الذكية */
+@media (max-width: 576px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header {
+        margin-bottom: 20px;
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header p {
+        font-size: 0.9rem;
+    }
+    
+    .login-container {
+        padding: 25px 15px;
+        margin: 0 10px;
+    }
+    
+    .dashboard-header h2 {
+        font-size: 1.4rem;
+    }
+    
+    .dashboard-content {
+        padding: 15px;
+    }
+    
+    .stat-card {
+        padding: 20px 15px;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .action-btn {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .assignment-form {
+        padding: 20px 15px;
+    }
+    
+    .assignment-form h4 {
+        font-size: 1.1rem;
+    }
+    
+    .modal-content {
+        width: 98%;
+        margin: 5px;
+        max-height: 95vh;
+    }
+    
+    .modal-header {
+        padding: 12px 15px;
+    }
+    
+    .modal-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .close {
+        font-size: 24px;
+    }
+    
+    .tab-button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .notification-item {
+        padding: 15px;
+    }
+    
+    .notification-source {
+        font-size: 1rem;
+    }
+    
+    .list-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .list-item-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* الهواتف الصغيرة جداً */
+@media (max-width: 320px) {
+    .header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .login-container {
+        padding: 20px 10px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
+    }
+    
+    .stat-card {
+        padding: 15px 10px;
+    }
+    
+    .action-btn {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .assignment-form {
+        padding: 15px 10px;
+    }
+    
+    .modal-body {
+        padding: 12px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+/* تحسينات للطباعة */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .header,
+    .dashboard-header,
+    .logout-btn,
+    .action-btn,
+    .notification-btn {
+        display: none !important;
+    }
+    
+    .dashboard-content {
+        box-shadow: none !important;
+        border: 1px solid #ccc;
+    }
+    
+    .modal-content {
+        box-shadow: none !important;
+        border: 1px solid #ccc;
+    }
+}
+
+/* تحسينات لوضع الظلام (اختياري) */
+@media (prefers-color-scheme: dark) {
+    /* يمكن إضافة أنماط الوضع المظلم هنا إذا لزم الأمر */
+}
+
+/* تحسينات للحركة المخفضة */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* تحسينات للتباين العالي */
+@media (prefers-contrast: high) {
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        border-width: 3px;
+    }
+    
+    .action-btn,
+    .submit-btn,
+    .login-btn {
+        border: 2px solid #000;
+    }
+}
+

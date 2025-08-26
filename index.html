@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة العمليات الإعلامية</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>نظام إدارة العمليات الإعلامية</h1>
+            <p>منصة متكاملة لإدارة ومتابعة العمليات الإعلامية</p>
+        </div>
+
+        <!-- نافذة تسجيل الدخول -->
+        <div id="loginContainer" class="login-container">
+            <h2>تسجيل الدخول</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">اسم المستخدم:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">دخول</button>
+            </form>
+        </div>
+
+        <!-- لوحة تحكم المدير -->
+        <div id="directorDashboard" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h2>لوحة تحكم المدير</h2>
+                <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>الموجهات المعلقة</h3>
+                        <span id="pendingDirectives" class="stat-number">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>الموجهات المعتمدة</h3>
+                        <span id="approvedDirectives" class="stat-number">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>التقارير الجديدة</h3>
+                        <span id="newReports" class="stat-number">0</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button onclick="showDirectiveForm()" class="action-btn">إضافة موجه جديد</button>
+                    <button onclick="showInbox()" class="action-btn">صندوق الوارد</button>
+                    <button onclick="showReports()" class="action-btn">عرض التقارير</button>
+                    <button onclick="openMediaManagement()" class="action-btn">إدارة الوسائل</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- لوحة تحكم المحلل -->
+        <div id="analystDashboard" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h2>لوحة تحكم المحلل</h2>
+                <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="action-buttons">
+                    <button onclick="showDirectives()" class="action-btn">عرض الموجهات</button>
+                    <button onclick="showAnalysisForm()" class="action-btn">إضافة تحليل</button>
+                    <button onclick="showMyAnalyses()" class="action-btn">تحليلاتي</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- لوحة تحكم راصد الشبكات الاجتماعية -->
+        <div id="socialDashboard" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h2>لوحة تحكم راصد الشبكات الاجتماعية</h2>
+                <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="action-buttons">
+                    <button onclick="showSocialMonitoringForm()" class="action-btn">رصد جديد</button>
+                    <button onclick="showMySocialReports()" class="action-btn">تقاريري</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- لوحة تحكم راصد المواقع الإلكترونية -->
+        <div id="webDashboard" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h2>لوحة تحكم راصد المواقع الإلكترونية</h2>
+                <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="action-buttons">
+                    <button onclick="showWebMonitoringForm()" class="action-btn">رصد جديد</button>
+                    <button onclick="showMyWebReports()" class="action-btn">تقاريري</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- لوحة تحكم راصد القنوات التلفزيونية -->
+        <div id="tvDashboard" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h2>لوحة تحكم راصد القنوات التلفزيونية</h2>
+                <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="action-buttons">
+                    <button onclick="showTVMonitoringForm()" class="action-btn">رصد جديد</button>
+                    <button onclick="showMyTVReports()" class="action-btn">تقاريري</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- لوحة تحكم مسؤولي المسارات -->
+        <div id="pathManagerDashboard" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h2 id="pathManagerTitle">لوحة تحكم مسؤول المسار</h2>
+                <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="action-buttons">
+                    <button onclick="showPathDirectives()" class="action-btn">الموجهات المرسلة</button>
+                    <button onclick="showAssignmentForm()" class="action-btn">إنشاء تكليف</button>
+                    <button onclick="showMyAssignments()" class="action-btn">تكاليفي</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- النوافذ المنبثقة -->
+    <div id="overlay" class="overlay" style="display: none;"></div>
+    
+    <!-- نافذة إضافة موجه -->
+    <div id="directiveModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة موجه جديد</h3>
+                <span class="close" onclick="closeModal('directiveModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="directiveForm">
+                    <div class="form-group">
+                        <label for="directiveTitle">عنوان الموجه:</label>
+                        <input type="text" id="directiveTitle" name="directiveTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="directiveContent">محتوى الموجه:</label>
+                        <textarea id="directiveContent" name="directiveContent" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="directivePriority">الأولوية:</label>
+                        <select id="directivePriority" name="directivePriority" required>
+                            <option value="">اختر الأولوية</option>
+                            <option value="عالية">عالية</option>
+                            <option value="متوسطة">متوسطة</option>
+                            <option value="منخفضة">منخفضة</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">إضافة الموجه</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة اختيار المسارات -->
+    <div id="pathSelectionModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>اختيار المسارات</h3>
+                <span class="close" onclick="closeModal('pathSelectionModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>اختر المسارات التي تريد إرسال الموجه إليها:</p>
+                <div class="path-selection">
+                    <label><input type="checkbox" value="political"> المسار السياسي</label>
+                    <label><input type="checkbox" value="cultural"> المسار الثقافي</label>
+                    <label><input type="checkbox" value="social"> المسار الاجتماعي</label>
+                    <label><input type="checkbox" value="propaganda"> المسار الدعائي</label>
+                    <label><input type="checkbox" value="international"> المسار الدولي</label>
+                </div>
+                <button onclick="sendToSelectedPaths()" class="submit-btn">إرسال للمسارات المحددة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة صندوق الوارد -->
+    <div id="inboxModal" class="modal" style="display: none;">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>صندوق الوارد</h3>
+                <span class="close" onclick="closeModal('inboxModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="inboxContent">
+                    <!-- سيتم ملء المحتوى ديناميكياً -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إدارة الوسائل -->
+    <div id="mediaManagementModal" class="modal" style="display: none;">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>إدارة الوسائل</h3>
+                <span class="close" onclick="closeModal('mediaManagementModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="showTab('files')">الملفات</button>
+                    <button class="tab-button" onclick="showTab('issues')">القضايا</button>
+                    <button class="tab-button" onclick="showTab('publishLevel')">مستوى النشر</button>
+                    <button class="tab-button" onclick="showTab('websites')">المواقع</button>
+                    <button class="tab-button" onclick="showTab('channels')">القنوات</button>
+                </div>
+                
+                <div id="filesTab" class="tab-content active">
+                    <h4>إدارة الملفات</h4>
+                    <div class="form-group">
+                        <input type="text" id="newFileName" placeholder="اسم الملف الجديد">
+                        <button onclick="addNewFile()" class="action-btn">إضافة ملف</button>
+                    </div>
+                    <div id="filesList"></div>
+                </div>
+                
+                <div id="issuesTab" class="tab-content">
+                    <h4>إدارة القضايا</h4>
+                    <div class="form-group">
+                        <input type="text" id="newIssueName" placeholder="اسم القضية الجديدة">
+                        <button onclick="addNewIssue()" class="action-btn">إضافة قضية</button>
+                    </div>
+                    <div id="issuesList"></div>
+                </div>
+
+                <div id="publishLevelTab" class="tab-content">
+                    <h4>إدارة مستوى النشر</h4>
+                    <div class="form-group">
+                        <input type="text" id="newPublishLevelName" placeholder="اسم مستوى النشر الجديد">
+                        <button onclick="addNewPublishLevel()" class="action-btn">إضافة مستوى نشر</button>
+                    </div>
+                    <div id="publishLevelsList"></div>
+                </div>
+
+                <div id="websitesTab" class="tab-content">
+                    <h4>إدارة المواقع الإلكترونية</h4>
+                    <div class="form-group">
+                        <input type="text" id="newWebsiteName2" placeholder="اسم الموقع">
+                        <input type="url" id="newWebsiteURL2" placeholder="رابط الموقع">
+                        <select id="newWebsiteEntity2">
+                            <option value="">اختر الكيان</option>
+                        </select>
+                        <select id="newWebsitePublishLevel2">
+                            <option value="">اختر مستوى النشر</option>
+                        </select>
+                        <button onclick="addNewWebsite2()" class="action-btn">إضافة موقع</button>
+                    </div>
+                    <div id="websitesList2"></div>
+                </div>
+
+                <div id="channelsTab" class="tab-content">
+                    <h4>إدارة القنوات التلفزيونية</h4>
+                    <div class="form-group">
+                        <input type="text" id="newChannelName2" placeholder="اسم القناة">
+                        <input type="text" id="newChannelFrequency2" placeholder="التردد">
+                        <select id="newChannelEntity2">
+                            <option value="">اختر الكيان</option>
+                        </select>
+                        <select id="newChannelPublishLevel2">
+                            <option value="">اختر مستوى النشر</option>
+                        </select>
+                        <button onclick="addNewChannel2()" class="action-btn">إضافة قناة</button>
+                    </div>
+                    <div id="channelsList2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة نماذج الرصد -->
+    <div id="monitoringModal" class="modal" style="display: none;">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3 id="monitoringModalTitle">نموذج الرصد</h3>
+                <span class="close" onclick="closeModal('monitoringModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="monitoringForm">
+                    <div id="monitoringFormContent">
+                        <!-- سيتم ملء المحتوى ديناميكياً -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إنشاء التكليف -->
+    <div id="assignmentModal" class="modal" style="display: none;">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>إنشاء تكليف جديد</h3>
+                <span class="close" onclick="closeModal('assignmentModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="assignmentsContainer">
+                    <div class="assignment-form" id="assignment1">
+                        <h4>التكليف الأول</h4>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>نص التكليف:</label>
+                                <textarea class="assignment-text" placeholder="اكتب نص التكليف هنا..." required></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>الجهة المنفذة:</label>
+                                <input type="text" class="executing-entity" placeholder="اسم الجهة المنفذة" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half-width">
+                                <label>زمن التنفيذ:</label>
+                                <input type="datetime-local" class="execution-time" required>
+                            </div>
+                            <div class="form-group half-width">
+                                <label>مستوى النشر:</label>
+                                <select class="publish-level" required>
+                                    <option value="">اختر مستوى النشر</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half-width">
+                                <label>نوع الوسيلة:</label>
+                                <select class="media-type" onchange="updateMediaOptionsNew(this)" required>
+                                    <option value="">اختر نوع الوسيلة</option>
+                                    <option value="تلفزيوني">تلفزيوني</option>
+                                    <option value="موقع">موقع</option>
+                                    <option value="شبكات اجتماعية">شبكات اجتماعية</option>
+                                </select>
+                            </div>
+                            <div class="form-group half-width">
+                                <label>الوسيلة:</label>
+                                <select class="specific-media-select" required>
+                                    <option value="">اختر الوسيلة</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="addAnotherAssignment()" class="action-btn">إضافة تكليف آخر</button>
+                    <button type="button" onclick="submitAllAssignments()" class="submit-btn">إرسال جميع التكاليف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/monitoring.js"></script>
+    <script src="js/assignments.js"></script>
+    <script src="js/media-management.js"></script>
+</body>
+</html>
+

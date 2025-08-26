@@ -1,0 +1,13 @@
+02e0f17d40fad44715a893853ab3fe2e  ./index.html
+363843a8fd12ab6d94e76cf35edba3eb  ./css/styles.css
+7eab95ceb63d847356629be5de849bef  ./css/responsive.css
+7ee4567879e5b08299a307adbb751efb  ./js/auth.js
+3f472a4f9dfcf8cfdee502cc3fcc1c62  ./js/main.js
+5c857e444d9c5b33df839d0d43f3eb3f  ./js/dashboard.js
+bc06c127a55510d8752825cd7ad736ee  ./js/monitoring.js
+49aacb79fb07ca37c396c585372d2716  ./js/assignments.js
+815687c347d33b69cab69143460f34d3  ./js/media-management.js
+f3702c648b5deb75b1587ac9c826d0b9  ./README.md
+676131f04c8f271c8c97751b907cc6b1  ./.htaccess
+a35292164b0a99a6ce1a914b29dc31f4  ./robots.txt
+acfc6549c5179647e315b2eec036e112  ./INSTALL.md
