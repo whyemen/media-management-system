@@ -1,0 +1,2749 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة العمليات الإعلامية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .user-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-details h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            color: #666;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .workflow-tracker {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .workflow-tracker h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .workflow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle.completed {
+            background: #28a745;
+        }
+
+        .step-circle.current {
+            background: #007bff;
+        }
+
+        .step-circle.pending {
+            background: #6c757d;
+        }
+
+        .step-label {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+        .workflow-line {
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 1;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .module-card.social { border-left-color: #1da1f2; }
+        .module-card.web { border-left-color: #ff6b35; }
+        .module-card.tv { border-left-color: #8e44ad; }
+        .module-card.analysis { border-left-color: #27ae60; }
+        .module-card.production { border-left-color: #f39c12; }
+        .module-card.publishing { border-left-color: #e74c3c; }
+        .module-card.consultation { border-left-color: #3498db; }
+        .module-card.reports { border-left-color: #9b59b6; }
+
+        .module-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .module-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 15px;
+            left: 25px;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-consultation {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e1e5e9;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom-color: #007bff;
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1001;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .directive-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .directive-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .directive-title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .directive-date {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .directive-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .consultation-request {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .consultation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .consultation-department {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .consultation-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .cost-item {
+            background: #fff8e1;
+            border: 1px solid #ffecb3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .cost-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cost-amount {
+            font-weight: bold;
+            color: #f57c00;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow-steps {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .workflow-line {
+                display: none;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>نظام إدارة العمليات الإعلامية</h1>
+            <p>نظام متكامل لإدارة الرصد والتحليل والإنتاج والنشر</p>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="login-container">
+            <h2>تسجيل الدخول</h2>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label for="username">اسم المستخدم:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">دخول</button>
+            </form>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <!-- User Info -->
+            <div class="user-info">
+                <div class="user-details">
+                    <h3 id="userFullName">مرحباً بك</h3>
+                    <p id="userRole">دورك في النظام</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+            </div>
+
+            <!-- Workflow Tracker -->
+            <div class="workflow-tracker">
+                <h3>مسار العمل الحالي</h3>
+                <div class="workflow-steps">
+                    <div class="workflow-line"></div>
+                    <div class="workflow-step">
+                        <div class="step-circle completed">1</div>
+                        <div class="step-label">الرصد</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-circle completed">2</div>
+                        <div class="step-label">التحليل</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-circle current">3</div>
+                        <div class="step-label">الموافقة</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-circle pending">4</div>
+                        <div class="step-label">الإنتاج</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-circle pending">5</div>
+                        <div class="step-label">النشر</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modules Grid -->
+            <div id="modulesContainer" class="modules-grid">
+                <!-- Modules will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals will be added by JavaScript -->
+    <div id="modalsContainer"></div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // User data and permissions
+        const users = {
+            'admin': {
+                password: 'admin123',
+                fullName: 'قيادة الدائرة',
+                role: 'مدير',
+                permissions: ['all']
+            },
+            'social_monitor1': {
+                password: '123456',
+                fullName: 'راصد الشبكات الاجتماعية',
+                role: 'راصد',
+                permissions: ['social_monitoring']
+            },
+            'web_monitor1': {
+                password: '123456',
+                fullName: 'راصد المواقع الإلكترونية',
+                role: 'راصد',
+                permissions: ['web_monitoring']
+            },
+            'tv_monitor1': {
+                password: '123456',
+                fullName: 'راصد القنوات التلفزيونية',
+                role: 'راصد',
+                permissions: ['tv_monitoring']
+            },
+            'analyst1': {
+                password: '123456',
+                fullName: 'محلل المحتوى',
+                role: 'محلل',
+                permissions: ['analysis', 'external_consultation']
+            },
+            'producer1': {
+                password: '123456',
+                fullName: 'المنتج',
+                role: 'منتج',
+                permissions: ['production']
+            },
+            'publisher1': {
+                password: '123456',
+                fullName: 'الناشر',
+                role: 'ناشر',
+                permissions: ['publishing']
+            },
+            'political_manager': {
+                password: '123456',
+                fullName: 'مسؤول المسار السياسي',
+                role: 'مسؤول مسار',
+                permissions: ['political_track']
+            },
+            'social_manager': {
+                password: '123456',
+                fullName: 'مسؤول المسار الاجتماعي',
+                role: 'مسؤول مسار',
+                permissions: ['social_track']
+            },
+            'cultural_manager': {
+                password: '123456',
+                fullName: 'مسؤول المسار الثقافي',
+                role: 'مسؤول مسار',
+                permissions: ['cultural_track']
+            },
+            'media_manager': {
+                password: '123456',
+                fullName: 'مسؤول المسار الدعائي',
+                role: 'مسؤول مسار',
+                permissions: ['media_track']
+            },
+            'international_manager': {
+                password: '123456',
+                fullName: 'مسؤول المسار الدولي',
+                role: 'مسؤول مسار',
+                permissions: ['international_track']
+            },
+            'political_specialist': {
+                password: '123456',
+                fullName: 'مختص الدائرة السياسية',
+                role: 'مختص دائرة',
+                permissions: ['political_consultation']
+            },
+            'organizational_specialist': {
+                password: '123456',
+                fullName: 'مختص الدائرة التنظيمية',
+                role: 'مختص دائرة',
+                permissions: ['organizational_consultation']
+            },
+            'guidance_specialist': {
+                password: '123456',
+                fullName: 'مختص دائرة التوجيه والإرشاد',
+                role: 'مختص دائرة',
+                permissions: ['guidance_consultation']
+            },
+            'legal_specialist': {
+                password: '123456',
+                fullName: 'مختص الدائرة القانونية',
+                role: 'مختص دائرة',
+                permissions: ['legal_consultation']
+            },
+            'social_specialist': {
+                password: '123456',
+                fullName: 'مختص الدائرة الاجتماعية',
+                role: 'مختص دائرة',
+                permissions: ['social_consultation']
+            },
+            'students_specialist': {
+                password: '123456',
+                fullName: 'مختص دائرة الطلاب',
+                role: 'مختص دائرة',
+                permissions: ['students_consultation']
+            },
+            'education_specialist': {
+                password: '123456',
+                fullName: 'مختص دائرة التعليم',
+                role: 'مختص دائرة',
+                permissions: ['education_consultation']
+            },
+            'unions_specialist': {
+                password: '123456',
+                fullName: 'مختص دائرة النقابات',
+                role: 'مختص دائرة',
+                permissions: ['unions_consultation']
+            },
+            'women_specialist': {
+                password: '123456',
+                fullName: 'مختص دائرة المرأة',
+                role: 'مختص دائرة',
+                permissions: ['women_consultation']
+            }
+        };
+
+        // Current user
+        let currentUser = null;
+
+        // Sample data
+        let socialMonitoringData = [
+            {
+                id: 1,
+                date: '2024-01-15',
+                platform: 'تويتر',
+                content: 'تغريدة حول السياسة الاقتصادية الجديدة',
+                link: 'https://twitter.com/example/status/123',
+                entity: 'الحكومة',
+                file: 'سياسي',
+                issue: 'الاقتصاد',
+                track: 'سياسي',
+                dailySummary: true
+            }
+        ];
+
+        let webMonitoringData = [
+            {
+                id: 1,
+                date: '2024-01-15',
+                website: 'الجزيرة نت',
+                title: 'تطورات جديدة في الوضع السياسي',
+                summary: 'تقرير شامل حول التطورات السياسية الأخيرة',
+                link: 'https://aljazeera.net/news/politics/123',
+                entity: 'الحكومة',
+                file: 'سياسي',
+                issue: 'السياسة',
+                track: 'سياسي',
+                contentType: 'خبر',
+                dailySummary: false
+            }
+        ];
+
+        let tvMonitoringData = [
+            {
+                id: 1,
+                date: '2024-01-15',
+                channel: 'الجزيرة',
+                program: 'نشرة الأخبار',
+                time: '20:00',
+                title: 'تقرير إخباري عن الأوضاع الاقتصادية',
+                summary: 'تحليل شامل للوضع الاقتصادي الحالي',
+                entity: 'الحكومة',
+                file: 'اقتصادي',
+                issue: 'الاقتصاد',
+                track: 'سياسي',
+                programType: 'إخباري',
+                duration: '30 دقيقة',
+                dailySummary: true
+            }
+        ];
+
+        let analysisData = [
+            {
+                id: 1,
+                title: 'تحليل الوضع السياسي الحالي',
+                content: 'تحليل شامل للأوضاع السياسية والاقتصادية',
+                analyst: 'محلل المحتوى',
+                date: '2024-01-15',
+                status: 'pending_approval',
+                priority: 'عالية',
+                recommendations: 'يُنصح بمتابعة التطورات عن كثب'
+            }
+        ];
+
+        let directivesData = [
+            {
+                id: 1,
+                title: 'توجيهات حول التغطية الإعلامية',
+                content: 'توجيهات مهمة حول كيفية التعامل مع الأحداث الجارية',
+                analyst: 'محلل المحتوى',
+                date: '2024-01-15',
+                status: 'pending_manager_approval',
+                track: 'سياسي',
+                priority: 'عالية'
+            }
+        ];
+
+        let consultationRequests = [
+            {
+                id: 1,
+                title: 'استشارة حول القضايا القانونية',
+                content: 'طلب استشارة حول الجوانب القانونية للموضوع',
+                department: 'الدائرة القانونية',
+                requestedBy: 'قيادة الدائرة',
+                date: '2024-01-15',
+                status: 'pending',
+                priority: 'عالية'
+            }
+        ];
+
+        let costsData = [
+            {
+                id: 1,
+                title: 'تكاليف الحملة الإعلامية',
+                description: 'تكاليف تنفيذ الحملة الإعلامية المقترحة',
+                amount: '50000',
+                currency: 'ريال',
+                track: 'دعائي',
+                manager: 'مسؤول المسار الدعائي',
+                date: '2024-01-15',
+                status: 'approved'
+            }
+        ];
+
+        // Reference data
+        const referenceData = {
+            entities: ['الحكومة', 'المعارضة', 'المجتمع المدني', 'القطاع الخاص', 'المنظمات الدولية', 'الأحزاب السياسية', 'النقابات', 'الجامعات'],
+            files: ['سياسي', 'اقتصادي', 'اجتماعي', 'ثقافي', 'رياضي', 'أمني', 'تعليمي', 'صحي', 'بيئي', 'تقني'],
+            issues: ['الانتخابات', 'الاقتصاد', 'التعليم', 'الصحة', 'البيئة', 'الأمن', 'حقوق الإنسان', 'الفساد', 'البطالة', 'الإسكان'],
+            tracks: ['سياسي', 'اجتماعي', 'ثقافي', 'دعائي', 'دولي'],
+            levels: ['محلي', 'إقليمي', 'دولي'],
+            contentTypes: ['خبر', 'تقرير', 'مقال', 'تحليل', 'مقابلة', 'وثائقي'],
+            platforms: ['تويتر', 'فيسبوك', 'إنستغرام', 'لينكد إن', 'يوتيوب', 'تيك توك'],
+            websites: [
+                'الجزيرة نت', 'العربية نت', 'بي بي سي عربي', 'سكاي نيوز عربية', 'فرانس 24',
+                'الشرق الأوسط', 'الخليج', 'الاتحاد', 'البيان', 'الأنباء', 'القبس', 'الوسط',
+                'أخبار الخليج', 'الأيام', 'الرياض', 'عكاظ', 'الوطن', 'اليوم السابع', 'الأهرام',
+                'الأخبار', 'المصري اليوم', 'الدستور', 'الحياة', 'العرب', 'الغد', 'الرأي',
+                'السبيل', 'النهار', 'عمان', 'الشبيبة', 'الوطن العماني', 'موقع آخر'
+            ],
+            departments: [
+                'الدائرة السياسية', 'الدائرة التنظيمية', 'دائرة التوجيه والإرشاد',
+                'الدائرة القانونية', 'الدائرة الاجتماعية', 'دائرة الطلاب',
+                'دائرة التعليم', 'دائرة النقابات', 'دائرة المرأة'
+            ]
+        };
+
+        // Login function
+        function login(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (users[username] && users[username].password === password) {
+                currentUser = { username, ...users[username] };
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                
+                document.getElementById('userFullName').textContent = currentUser.fullName;
+                document.getElementById('userRole').textContent = currentUser.role;
+                
+                loadModules();
+                showNotification('تم تسجيل الدخول بنجاح!');
+            } else {
+                alert('اسم المستخدم أو كلمة المرور غير صحيحة');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Load modules based on user permissions
+        function loadModules() {
+            const container = document.getElementById('modulesContainer');
+            container.innerHTML = '';
+
+            const modules = getModulesForUser(currentUser.permissions);
+            
+            modules.forEach(module => {
+                const moduleCard = document.createElement('div');
+                moduleCard.className = `module-card ${module.class}`;
+                moduleCard.onclick = () => showModule(module.id);
+                
+                moduleCard.innerHTML = `
+                    <h3>${module.title}</h3>
+                    <p>${module.description}</p>
+                `;
+                
+                container.appendChild(moduleCard);
+            });
+        }
+
+        // Get modules for user
+        function getModulesForUser(permissions) {
+            const allModules = [
+                {
+                    id: 'social_monitoring',
+                    title: 'رصد الشبكات الاجتماعية',
+                    description: 'رصد وتتبع المحتوى على منصات التواصل الاجتماعي',
+                    class: 'social',
+                    permission: 'social_monitoring'
+                },
+                {
+                    id: 'web_monitoring',
+                    title: 'رصد المواقع الإلكترونية',
+                    description: 'رصد وتتبع الأخبار والمقالات على المواقع الإلكترونية',
+                    class: 'web',
+                    permission: 'web_monitoring'
+                },
+                {
+                    id: 'tv_monitoring',
+                    title: 'رصد القنوات التلفزيونية',
+                    description: 'رصد وتتبع البرامج والأخبار التلفزيونية',
+                    class: 'tv',
+                    permission: 'tv_monitoring'
+                },
+                {
+                    id: 'analysis',
+                    title: 'التحليل والموافقات',
+                    description: 'تحليل المحتوى المرصود وإرسال الموجهات للموافقة',
+                    class: 'analysis',
+                    permission: 'analysis'
+                },
+                {
+                    id: 'production',
+                    title: 'الإنتاج',
+                    description: 'إنتاج المحتوى الإعلامي والمواد الدعائية',
+                    class: 'production',
+                    permission: 'production'
+                },
+                {
+                    id: 'publishing',
+                    title: 'النشر',
+                    description: 'نشر المحتوى على المنصات المختلفة',
+                    class: 'publishing',
+                    permission: 'publishing'
+                },
+                {
+                    id: 'external_consultation',
+                    title: 'الاستشارات الخارجية',
+                    description: 'طلب استشارات من الدوائر الأخرى',
+                    class: 'consultation',
+                    permission: 'external_consultation'
+                },
+                {
+                    id: 'manager_approval',
+                    title: 'موافقة الموجهات',
+                    description: 'مراجعة وموافقة الموجهات المرسلة من المحللين',
+                    class: 'analysis',
+                    permission: 'all'
+                },
+                {
+                    id: 'political_track',
+                    title: 'المسار السياسي',
+                    description: 'إدارة الموجهات والتكاليف للمسار السياسي',
+                    class: 'analysis',
+                    permission: 'political_track'
+                },
+                {
+                    id: 'social_track',
+                    title: 'المسار الاجتماعي',
+                    description: 'إدارة الموجهات والتكاليف للمسار الاجتماعي',
+                    class: 'analysis',
+                    permission: 'social_track'
+                },
+                {
+                    id: 'cultural_track',
+                    title: 'المسار الثقافي',
+                    description: 'إدارة الموجهات والتكاليف للمسار الثقافي',
+                    class: 'analysis',
+                    permission: 'cultural_track'
+                },
+                {
+                    id: 'media_track',
+                    title: 'المسار الدعائي',
+                    description: 'إدارة الموجهات والتكاليف للمسار الدعائي',
+                    class: 'analysis',
+                    permission: 'media_track'
+                },
+                {
+                    id: 'international_track',
+                    title: 'المسار الدولي',
+                    description: 'إدارة الموجهات والتكاليف للمسار الدولي',
+                    class: 'analysis',
+                    permission: 'international_track'
+                },
+                {
+                    id: 'political_consultation',
+                    title: 'استشارات الدائرة السياسية',
+                    description: 'الرد على الاستشارات المحولة للدائرة السياسية',
+                    class: 'consultation',
+                    permission: 'political_consultation'
+                },
+                {
+                    id: 'organizational_consultation',
+                    title: 'استشارات الدائرة التنظيمية',
+                    description: 'الرد على الاستشارات المحولة للدائرة التنظيمية',
+                    class: 'consultation',
+                    permission: 'organizational_consultation'
+                },
+                {
+                    id: 'guidance_consultation',
+                    title: 'استشارات دائرة التوجيه والإرشاد',
+                    description: 'الرد على الاستشارات المحولة لدائرة التوجيه والإرشاد',
+                    class: 'consultation',
+                    permission: 'guidance_consultation'
+                },
+                {
+                    id: 'legal_consultation',
+                    title: 'استشارات الدائرة القانونية',
+                    description: 'الرد على الاستشارات المحولة للدائرة القانونية',
+                    class: 'consultation',
+                    permission: 'legal_consultation'
+                },
+                {
+                    id: 'social_consultation',
+                    title: 'استشارات الدائرة الاجتماعية',
+                    description: 'الرد على الاستشارات المحولة للدائرة الاجتماعية',
+                    class: 'consultation',
+                    permission: 'social_consultation'
+                },
+                {
+                    id: 'students_consultation',
+                    title: 'استشارات دائرة الطلاب',
+                    description: 'الرد على الاستشارات المحولة لدائرة الطلاب',
+                    class: 'consultation',
+                    permission: 'students_consultation'
+                },
+                {
+                    id: 'education_consultation',
+                    title: 'استشارات دائرة التعليم',
+                    description: 'الرد على الاستشارات المحولة لدائرة التعليم',
+                    class: 'consultation',
+                    permission: 'education_consultation'
+                },
+                {
+                    id: 'unions_consultation',
+                    title: 'استشارات دائرة النقابات',
+                    description: 'الرد على الاستشارات المحولة لدائرة النقابات',
+                    class: 'consultation',
+                    permission: 'unions_consultation'
+                },
+                {
+                    id: 'women_consultation',
+                    title: 'استشارات دائرة المرأة',
+                    description: 'الرد على الاستشارات المحولة لدائرة المرأة',
+                    class: 'consultation',
+                    permission: 'women_consultation'
+                }
+            ];
+
+            return allModules.filter(module => 
+                permissions.includes('all') || permissions.includes(module.permission)
+            );
+        }
+
+        // Show module
+        function showModule(moduleId) {
+            // Remove existing modals
+            document.getElementById('modalsContainer').innerHTML = '';
+            
+            // Create and show appropriate modal
+            switch(moduleId) {
+                case 'social_monitoring':
+                    showSocialMonitoringModal();
+                    break;
+                case 'web_monitoring':
+                    showWebMonitoringModal();
+                    break;
+                case 'tv_monitoring':
+                    showTVMonitoringModal();
+                    break;
+                case 'analysis':
+                    showAnalysisModal();
+                    break;
+                case 'production':
+                    showProductionModal();
+                    break;
+                case 'publishing':
+                    showPublishingModal();
+                    break;
+                case 'external_consultation':
+                    showExternalConsultationModal();
+                    break;
+                case 'manager_approval':
+                    showManagerApprovalModal();
+                    break;
+                case 'political_track':
+                case 'social_track':
+                case 'cultural_track':
+                case 'media_track':
+                case 'international_track':
+                    showTrackManagerModal(moduleId);
+                    break;
+                case 'political_consultation':
+                case 'organizational_consultation':
+                case 'guidance_consultation':
+                case 'legal_consultation':
+                case 'social_consultation':
+                case 'students_consultation':
+                case 'education_consultation':
+                case 'unions_consultation':
+                case 'women_consultation':
+                    showDepartmentConsultationModal(moduleId);
+                    break;
+            }
+        }
+
+        // Social Monitoring Modal
+        function showSocialMonitoringModal() {
+            const modal = createModal('social_monitoring', 'رصد الشبكات الاجتماعية', `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'social-form')">إدخال جديد</div>
+                    <div class="tab" onclick="switchTab(event, 'social-list')">البيانات المحفوظة</div>
+                    <div class="tab" onclick="switchTab(event, 'social-manage')">إدارة القوائم</div>
+                </div>
+                
+                <div id="social-form" class="tab-content active">
+                    <form onsubmit="saveSocialMonitoring(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>التاريخ:</label>
+                                <input type="date" id="socialDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>المنصة:</label>
+                                <select id="socialPlatform" required>
+                                    <option value="">اختر المنصة</option>
+                                    ${referenceData.platforms.map(platform => `<option value="${platform}">${platform}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>نص المنشور:</label>
+                            <textarea id="socialContent" required placeholder="أدخل نص المنشور هنا..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>رابط المنشور:</label>
+                            <input type="url" id="socialLink" placeholder="https://...">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>الكيان:</label>
+                                <select id="socialEntity" required>
+                                    <option value="">اختر الكيان</option>
+                                    ${referenceData.entities.map(entity => `<option value="${entity}">${entity}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>الملف:</label>
+                                <select id="socialFile" required>
+                                    <option value="">اختر الملف</option>
+                                    ${referenceData.files.map(file => `<option value="${file}">${file}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>القضية:</label>
+                                <select id="socialIssue" required>
+                                    <option value="">اختر القضية</option>
+                                    ${referenceData.issues.map(issue => `<option value="${issue}">${issue}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المسار:</label>
+                                <select id="socialTrack" required>
+                                    <option value="">اختر المسار</option>
+                                    ${referenceData.tracks.map(track => `<option value="${track}">${track}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="socialDailySummary">
+                            <label for="socialDailySummary">إضافة للخلاصة اليومية</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">حفظ الإدخال</button>
+                    </form>
+                </div>
+                
+                <div id="social-list" class="tab-content">
+                    <h4>البيانات المحفوظة</h4>
+                    <div id="socialDataList">
+                        ${generateSocialDataTable()}
+                    </div>
+                </div>
+                
+                <div id="social-manage" class="tab-content">
+                    <h4>إدارة القوائم المرجعية</h4>
+                    <p>يمكنك هنا إضافة أو تعديل أو حذف عناصر القوائم المرجعية.</p>
+                    <div class="alert alert-info">
+                        <strong>ملاحظة:</strong> هذه الميزة قيد التطوير وستكون متاحة قريباً.
+                    </div>
+                </div>
+            `);
+            
+            // Set today's date
+            document.getElementById('socialDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        // Web Monitoring Modal
+        function showWebMonitoringModal() {
+            const modal = createModal('web_monitoring', 'رصد المواقع الإلكترونية', `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'web-form')">إدخال جديد</div>
+                    <div class="tab" onclick="switchTab(event, 'web-list')">البيانات المحفوظة</div>
+                    <div class="tab" onclick="switchTab(event, 'web-manage')">إدارة القوائم</div>
+                </div>
+                
+                <div id="web-form" class="tab-content active">
+                    <form onsubmit="saveWebMonitoring(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>التاريخ:</label>
+                                <input type="date" id="webDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>اسم الموقع:</label>
+                                <select id="webSite" required>
+                                    <option value="">اختر الموقع</option>
+                                    ${referenceData.websites.map(website => `<option value="${website}">${website}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>عنوان الخبر:</label>
+                            <input type="text" id="webTitle" required placeholder="أدخل عنوان الخبر...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>ملخص المحتوى:</label>
+                            <textarea id="webSummary" required placeholder="أدخل ملخص المحتوى هنا..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>رابط الخبر:</label>
+                                <input type="url" id="webLink" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label>نوع المحتوى:</label>
+                                <select id="webContentType" required>
+                                    <option value="">اختر نوع المحتوى</option>
+                                    ${referenceData.contentTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>الكيان:</label>
+                                <select id="webEntity" required>
+                                    <option value="">اختر الكيان</option>
+                                    ${referenceData.entities.map(entity => `<option value="${entity}">${entity}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>الملف:</label>
+                                <select id="webFile" required>
+                                    <option value="">اختر الملف</option>
+                                    ${referenceData.files.map(file => `<option value="${file}">${file}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>القضية:</label>
+                                <select id="webIssue" required>
+                                    <option value="">اختر القضية</option>
+                                    ${referenceData.issues.map(issue => `<option value="${issue}">${issue}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المسار:</label>
+                                <select id="webTrack" required>
+                                    <option value="">اختر المسار</option>
+                                    ${referenceData.tracks.map(track => `<option value="${track}">${track}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="webDailySummary">
+                            <label for="webDailySummary">إضافة للخلاصة اليومية</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">حفظ الإدخال</button>
+                    </form>
+                </div>
+                
+                <div id="web-list" class="tab-content">
+                    <h4>البيانات المحفوظة</h4>
+                    <div id="webDataList">
+                        ${generateWebDataTable()}
+                    </div>
+                </div>
+                
+                <div id="web-manage" class="tab-content">
+                    <h4>إدارة القوائم المرجعية</h4>
+                    <p>يمكنك هنا إضافة أو تعديل أو حذف عناصر القوائم المرجعية.</p>
+                    <div class="alert alert-info">
+                        <strong>ملاحظة:</strong> هذه الميزة قيد التطوير وستكون متاحة قريباً.
+                    </div>
+                </div>
+            `);
+            
+            // Set today's date
+            document.getElementById('webDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        // TV Monitoring Modal
+        function showTVMonitoringModal() {
+            const modal = createModal('tv_monitoring', 'رصد القنوات التلفزيونية', `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'tv-form')">إدخال جديد</div>
+                    <div class="tab" onclick="switchTab(event, 'tv-list')">البيانات المحفوظة</div>
+                    <div class="tab" onclick="switchTab(event, 'tv-manage')">إدارة القوائم</div>
+                </div>
+                
+                <div id="tv-form" class="tab-content active">
+                    <form onsubmit="saveTVMonitoring(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>التاريخ:</label>
+                                <input type="date" id="tvDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>اسم القناة:</label>
+                                <input type="text" id="tvChannel" required placeholder="أدخل اسم القناة...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>اسم البرنامج:</label>
+                                <input type="text" id="tvProgram" required placeholder="أدخل اسم البرنامج...">
+                            </div>
+                            <div class="form-group">
+                                <label>وقت البث:</label>
+                                <input type="time" id="tvTime" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>عنوان الموضوع:</label>
+                            <input type="text" id="tvTitle" required placeholder="أدخل عنوان الموضوع...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>ملخص المحتوى:</label>
+                            <textarea id="tvSummary" required placeholder="أدخل ملخص المحتوى هنا..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>نوع البرنامج:</label>
+                                <select id="tvProgramType" required>
+                                    <option value="">اختر نوع البرنامج</option>
+                                    <option value="إخباري">إخباري</option>
+                                    <option value="حواري">حواري</option>
+                                    <option value="وثائقي">وثائقي</option>
+                                    <option value="ترفيهي">ترفيهي</option>
+                                    <option value="رياضي">رياضي</option>
+                                    <option value="ثقافي">ثقافي</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>مدة البرنامج:</label>
+                                <input type="text" id="tvDuration" placeholder="مثال: 30 دقيقة">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>الكيان:</label>
+                                <select id="tvEntity" required>
+                                    <option value="">اختر الكيان</option>
+                                    ${referenceData.entities.map(entity => `<option value="${entity}">${entity}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>الملف:</label>
+                                <select id="tvFile" required>
+                                    <option value="">اختر الملف</option>
+                                    ${referenceData.files.map(file => `<option value="${file}">${file}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>القضية:</label>
+                                <select id="tvIssue" required>
+                                    <option value="">اختر القضية</option>
+                                    ${referenceData.issues.map(issue => `<option value="${issue}">${issue}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المسار:</label>
+                                <select id="tvTrack" required>
+                                    <option value="">اختر المسار</option>
+                                    ${referenceData.tracks.map(track => `<option value="${track}">${track}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="tvDailySummary">
+                            <label for="tvDailySummary">إضافة للخلاصة اليومية</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">حفظ الإدخال</button>
+                    </form>
+                </div>
+                
+                <div id="tv-list" class="tab-content">
+                    <h4>البيانات المحفوظة</h4>
+                    <div id="tvDataList">
+                        ${generateTVDataTable()}
+                    </div>
+                </div>
+                
+                <div id="tv-manage" class="tab-content">
+                    <h4>إدارة القوائم المرجعية</h4>
+                    <p>يمكنك هنا إضافة أو تعديل أو حذف عناصر القوائم المرجعية.</p>
+                    <div class="alert alert-info">
+                        <strong>ملاحظة:</strong> هذه الميزة قيد التطوير وستكون متاحة قريباً.
+                    </div>
+                </div>
+            `);
+            
+            // Set today's date
+            document.getElementById('tvDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        // Analysis Modal
+        function showAnalysisModal() {
+            const modal = createModal('analysis', 'التحليل والموافقات', `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'analysis-queue')">قائمة انتظار التحليل</div>
+                    <div class="tab" onclick="switchTab(event, 'analysis-completed')">التحليلات المكتملة</div>
+                    <div class="tab" onclick="switchTab(event, 'directives-form')">إرسال الموجهات</div>
+                </div>
+                
+                <div id="analysis-queue" class="tab-content active">
+                    <h4>المحتوى في انتظار التحليل</h4>
+                    <div class="alert alert-info">
+                        <strong>المحتوى المتاح للتحليل:</strong> 5 عناصر جديدة
+                    </div>
+                    
+                    <div class="directive-item">
+                        <div class="directive-header">
+                            <div class="directive-title">تغريدة حول السياسة الاقتصادية</div>
+                            <div class="directive-date">2024-01-15</div>
+                        </div>
+                        <div class="directive-content">
+                            محتوى يتطلب تحليل حول التطورات الاقتصادية الأخيرة...
+                        </div>
+                        <button class="btn btn-primary" onclick="startAnalysis(1)">بدء التحليل</button>
+                    </div>
+                </div>
+                
+                <div id="analysis-completed" class="tab-content">
+                    <h4>التحليلات المكتملة</h4>
+                    ${generateAnalysisTable()}
+                </div>
+                
+                <div id="directives-form" class="tab-content">
+                    <h4>إرسال الموجهات إلى القيادة</h4>
+                    <form onsubmit="sendDirectives(event)">
+                        <div class="form-group">
+                            <label>عنوان الموجهة:</label>
+                            <input type="text" id="directiveTitle" required placeholder="أدخل عنوان الموجهة...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>محتوى الموجهة:</label>
+                            <textarea id="directiveContent" required placeholder="أدخل محتوى الموجهة والتوصيات..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>المسار المقترح:</label>
+                                <select id="directiveTrack" required>
+                                    <option value="">اختر المسار</option>
+                                    ${referenceData.tracks.map(track => `<option value="${track}">${track}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>مستوى الأولوية:</label>
+                                <select id="directivePriority" required>
+                                    <option value="">اختر الأولوية</option>
+                                    <option value="عالية">عالية</option>
+                                    <option value="متوسطة">متوسطة</option>
+                                    <option value="منخفضة">منخفضة</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">إرسال إلى القيادة للإقرار</button>
+                    </form>
+                </div>
+            `);
+        }
+
+        // Manager Approval Modal
+        function showManagerApprovalModal() {
+            const modal = createModal('manager_approval', 'موافقة الموجهات', `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'pending-directives')">الموجهات المعلقة</div>
+                    <div class="tab" onclick="switchTab(event, 'approved-directives')">الموجهات المعتمدة</div>
+                </div>
+                
+                <div id="pending-directives" class="tab-content active">
+                    <h4>الموجهات في انتظار الموافقة</h4>
+                    
+                    <div class="directive-item">
+                        <div class="directive-header">
+                            <div class="directive-title">توجيهات حول التغطية الإعلامية</div>
+                            <div class="directive-date">2024-01-15</div>
+                        </div>
+                        <div class="directive-content">
+                            توجيهات مهمة حول كيفية التعامل مع الأحداث الجارية والتغطية الإعلامية المناسبة...
+                        </div>
+                        <div><strong>المسار المقترح:</strong> سياسي</div>
+                        <div><strong>الأولوية:</strong> عالية</div>
+                        <div><strong>المحلل:</strong> محلل المحتوى</div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-success" onclick="approveDirective(1)">موافقة</button>
+                            <button class="btn btn-danger" onclick="rejectDirective(1)">رفض</button>
+                            <button class="btn btn-info" onclick="requestExternalConsultation(1)">استشارة خارجية</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="approved-directives" class="tab-content">
+                    <h4>الموجهات المعتمدة</h4>
+                    <div class="alert alert-success">
+                        <strong>تم اعتماد:</strong> 12 موجهة هذا الشهر
+                    </div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>المسار</th>
+                                <th>تاريخ الاعتماد</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>توجيهات التغطية الإعلامية</td>
+                                <td>سياسي</td>
+                                <td>2024-01-10</td>
+                                <td><span class="status-badge status-approved">معتمد</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `);
+        }
+
+        // Track Manager Modal
+        function showTrackManagerModal(trackId) {
+            const trackNames = {
+                'political_track': 'المسار السياسي',
+                'social_track': 'المسار الاجتماعي',
+                'cultural_track': 'المسار الثقافي',
+                'media_track': 'المسار الدعائي',
+                'international_track': 'المسار الدولي'
+            };
+            
+            const trackName = trackNames[trackId];
+            
+            const modal = createModal(trackId, trackName, `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'assigned-directives')">الموجهات المحولة</div>
+                    <div class="tab" onclick="switchTab(event, 'costs-planning')">التكاليف والتخطيط</div>
+                    <div class="tab" onclick="switchTab(event, 'implementation')">التنفيذ</div>
+                </div>
+                
+                <div id="assigned-directives" class="tab-content active">
+                    <h4>الموجهات المحولة إلى ${trackName}</h4>
+                    
+                    <div class="directive-item">
+                        <div class="directive-header">
+                            <div class="directive-title">توجيهات التغطية الإعلامية</div>
+                            <div class="directive-date">محولة في: 2024-01-15</div>
+                        </div>
+                        <div class="directive-content">
+                            توجيهات مهمة حول كيفية التعامل مع الأحداث الجارية...
+                        </div>
+                        <div><strong>الأولوية:</strong> عالية</div>
+                        <button class="btn btn-primary" onclick="createCostPlan(1)">إنشاء خطة التكاليف</button>
+                    </div>
+                </div>
+                
+                <div id="costs-planning" class="tab-content">
+                    <h4>إدارة التكاليف والتخطيط</h4>
+                    
+                    <form onsubmit="saveCostPlan(event)">
+                        <div class="form-group">
+                            <label>عنوان الخطة:</label>
+                            <input type="text" id="costTitle" required placeholder="أدخل عنوان الخطة...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>وصف الخطة:</label>
+                            <textarea id="costDescription" required placeholder="أدخل وصف تفصيلي للخطة..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>التكلفة المقدرة:</label>
+                                <input type="number" id="costAmount" required placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>العملة:</label>
+                                <select id="costCurrency" required>
+                                    <option value="ريال">ريال سعودي</option>
+                                    <option value="دولار">دولار أمريكي</option>
+                                    <option value="يورو">يورو</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>تاريخ البدء:</label>
+                                <input type="date" id="costStartDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>تاريخ الانتهاء:</label>
+                                <input type="date" id="costEndDate" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">حفظ خطة التكاليف</button>
+                    </form>
+                    
+                    <h4 style="margin-top: 30px;">الخطط المحفوظة</h4>
+                    <div class="cost-item">
+                        <div class="cost-header">
+                            <div>خطة الحملة الإعلامية</div>
+                            <div class="cost-amount">50,000 ريال</div>
+                        </div>
+                        <div>حملة إعلامية شاملة لمدة شهر</div>
+                        <div><strong>المدة:</strong> 2024-01-15 إلى 2024-02-15</div>
+                    </div>
+                </div>
+                
+                <div id="implementation" class="tab-content">
+                    <h4>متابعة التنفيذ</h4>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">خطط قيد التنفيذ</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">75%</div>
+                            <div class="stat-label">معدل الإنجاز</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">150,000</div>
+                            <div class="stat-label">إجمالي الميزانية</div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>الحالة الحالية:</strong> جميع الخطط تسير وفق الجدول الزمني المحدد.
+                    </div>
+                </div>
+            `);
+        }
+
+        // Department Consultation Modal
+        function showDepartmentConsultationModal(consultationId) {
+            const departmentNames = {
+                'political_consultation': 'الدائرة السياسية',
+                'organizational_consultation': 'الدائرة التنظيمية',
+                'guidance_consultation': 'دائرة التوجيه والإرشاد',
+                'legal_consultation': 'الدائرة القانونية',
+                'social_consultation': 'الدائرة الاجتماعية',
+                'students_consultation': 'دائرة الطلاب',
+                'education_consultation': 'دائرة التعليم',
+                'unions_consultation': 'دائرة النقابات',
+                'women_consultation': 'دائرة المرأة'
+            };
+            
+            const departmentName = departmentNames[consultationId];
+            
+            const modal = createModal(consultationId, `استشارات ${departmentName}`, `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'pending-consultations')">الاستشارات المعلقة</div>
+                    <div class="tab" onclick="switchTab(event, 'completed-consultations')">الاستشارات المكتملة</div>
+                </div>
+                
+                <div id="pending-consultations" class="tab-content active">
+                    <h4>الاستشارات المحولة إلى ${departmentName}</h4>
+                    
+                    <div class="consultation-request">
+                        <div class="consultation-header">
+                            <div class="consultation-department">استشارة حول القضايا القانونية</div>
+                            <div class="consultation-status">معلقة</div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>المرسل:</strong> قيادة الدائرة<br>
+                            <strong>التاريخ:</strong> 2024-01-15<br>
+                            <strong>الأولوية:</strong> عالية
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>محتوى الاستشارة:</strong><br>
+                            نحتاج رأيكم في الجوانب القانونية للموضوع المطروح...
+                        </div>
+                        
+                        <form onsubmit="submitConsultationResponse(event, 1)">
+                            <div class="form-group">
+                                <label>الرد على الاستشارة:</label>
+                                <textarea id="consultationResponse" required placeholder="أدخل ردكم على الاستشارة..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>التوصيات:</label>
+                                <textarea id="consultationRecommendations" placeholder="أدخل التوصيات إن وجدت..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success">إرسال الرد</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div id="completed-consultations" class="tab-content">
+                    <h4>الاستشارات المكتملة</h4>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الموضوع</th>
+                                <th>المرسل</th>
+                                <th>تاريخ الرد</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>استشارة قانونية سابقة</td>
+                                <td>قيادة الدائرة</td>
+                                <td>2024-01-10</td>
+                                <td><span class="status-badge status-approved">مكتملة</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `);
+        }
+
+        // External Consultation Modal
+        function showExternalConsultationModal() {
+            const modal = createModal('external_consultation', 'الاستشارات الخارجية', `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'new-consultation')">طلب استشارة جديدة</div>
+                    <div class="tab" onclick="switchTab(event, 'consultation-status')">حالة الاستشارات</div>
+                </div>
+                
+                <div id="new-consultation" class="tab-content active">
+                    <h4>طلب استشارة من الدوائر الأخرى</h4>
+                    
+                    <form onsubmit="requestConsultation(event)">
+                        <div class="form-group">
+                            <label>الدائرة المطلوب استشارتها:</label>
+                            <select id="consultationDepartment" required>
+                                <option value="">اختر الدائرة</option>
+                                ${referenceData.departments.map(dept => `<option value="${dept}">${dept}</option>`).join('')}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>موضوع الاستشارة:</label>
+                            <input type="text" id="consultationTitle" required placeholder="أدخل موضوع الاستشارة...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>تفاصيل الاستشارة:</label>
+                            <textarea id="consultationDetails" required placeholder="أدخل تفاصيل الاستشارة والأسئلة المحددة..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>مستوى الأولوية:</label>
+                                <select id="consultationPriority" required>
+                                    <option value="">اختر الأولوية</option>
+                                    <option value="عالية">عالية</option>
+                                    <option value="متوسطة">متوسطة</option>
+                                    <option value="منخفضة">منخفضة</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>الموعد المطلوب للرد:</label>
+                                <input type="date" id="consultationDeadline" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">إرسال طلب الاستشارة</button>
+                    </form>
+                </div>
+                
+                <div id="consultation-status" class="tab-content">
+                    <h4>حالة الاستشارات المرسلة</h4>
+                    
+                    <div class="consultation-request">
+                        <div class="consultation-header">
+                            <div class="consultation-department">الدائرة القانونية</div>
+                            <div class="consultation-status">معلقة</div>
+                        </div>
+                        <div>
+                            <strong>الموضوع:</strong> استشارة حول القضايا القانونية<br>
+                            <strong>تاريخ الإرسال:</strong> 2024-01-15<br>
+                            <strong>الموعد المطلوب:</strong> 2024-01-20
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+
+        // Production Modal
+        function showProductionModal() {
+            const modal = createModal('production', 'الإنتاج', `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'production-queue')">قائمة الإنتاج</div>
+                    <div class="tab" onclick="switchTab(event, 'production-progress')">قيد الإنتاج</div>
+                    <div class="tab" onclick="switchTab(event, 'production-form')">إنتاج جديد</div>
+                </div>
+                
+                <div id="production-queue" class="tab-content active">
+                    <h4>المحتوى الجاهز للإنتاج</h4>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">في انتظار الإنتاج</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">قيد الإنتاج</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">127</div>
+                            <div class="stat-label">مكتمل</div>
+                        </div>
+                    </div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>النوع</th>
+                                <th>الأولوية</th>
+                                <th>التاريخ المطلوب</th>
+                                <th>الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>مقال حول التطورات السياسية</td>
+                                <td>مقال</td>
+                                <td><span class="status-badge status-pending">عالية</span></td>
+                                <td>2024-01-20</td>
+                                <td><button class="btn btn-primary" onclick="startProduction(1)">بدء الإنتاج</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="production-progress" class="tab-content">
+                    <h4>المحتوى قيد الإنتاج</h4>
+                    
+                    <div class="directive-item">
+                        <div class="directive-header">
+                            <div class="directive-title">فيديو توضيحي حول السياسات الجديدة</div>
+                            <div class="directive-date">بدء الإنتاج: 2024-01-10</div>
+                        </div>
+                        <div class="directive-content">
+                            <strong>المنتج:</strong> فريق الإنتاج<br>
+                            <strong>المصمم/المنفذ:</strong> أحمد محمد<br>
+                            <strong>التقدم:</strong>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                            65% مكتمل
+                        </div>
+                        <button class="btn btn-info">تحديث التقدم</button>
+                    </div>
+                </div>
+                
+                <div id="production-form" class="tab-content">
+                    <h4>بدء إنتاج جديد</h4>
+                    
+                    <form onsubmit="saveProduction(event)">
+                        <div class="form-group">
+                            <label>عنوان المحتوى:</label>
+                            <input type="text" id="productionTitle" required placeholder="أدخل عنوان المحتوى...">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>نوع المحتوى:</label>
+                                <select id="productionType" required>
+                                    <option value="">اختر النوع</option>
+                                    <option value="مقال">مقال</option>
+                                    <option value="فيديو">فيديو</option>
+                                    <option value="إنفوجرافيك">إنفوجرافيك</option>
+                                    <option value="تقرير">تقرير</option>
+                                    <option value="مقابلة">مقابلة</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المنتج المسؤول:</label>
+                                <input type="text" id="productionManager" required placeholder="اسم المنتج المسؤول...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>وصف المحتوى:</label>
+                            <textarea id="productionDescription" required placeholder="أدخل وصف تفصيلي للمحتوى المطلوب..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>تاريخ التسليم المطلوب:</label>
+                                <input type="date" id="productionDeadline" required>
+                            </div>
+                            <div class="form-group">
+                                <label>مستوى الأولوية:</label>
+                                <select id="productionPriority" required>
+                                    <option value="">اختر الأولوية</option>
+                                    <option value="عالية">عالية</option>
+                                    <option value="متوسطة">متوسطة</option>
+                                    <option value="منخفضة">منخفضة</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">بدء الإنتاج</button>
+                    </form>
+                </div>
+            `);
+        }
+
+        // Publishing Modal
+        function showPublishingModal() {
+            const modal = createModal('publishing', 'النشر', `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'publishing-queue')">قائمة النشر</div>
+                    <div class="tab" onclick="switchTab(event, 'published-content')">المحتوى المنشور</div>
+                    <div class="tab" onclick="switchTab(event, 'publishing-form')">نشر جديد</div>
+                </div>
+                
+                <div id="publishing-queue" class="tab-content active">
+                    <h4>المحتوى الجاهز للنشر</h4>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>النوع</th>
+                                <th>المنصة المقترحة</th>
+                                <th>الأولوية</th>
+                                <th>الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>مقال حول التطورات الاقتصادية</td>
+                                <td>مقال</td>
+                                <td>الموقع الرسمي</td>
+                                <td><span class="status-badge status-pending">عالية</span></td>
+                                <td><button class="btn btn-primary" onclick="publishContent(1)">نشر</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="published-content" class="tab-content">
+                    <h4>المحتوى المنشور</h4>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">89</div>
+                            <div class="stat-label">منشور هذا الشهر</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">15,420</div>
+                            <div class="stat-label">إجمالي المشاهدات</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">1,250</div>
+                            <div class="stat-label">التفاعلات</div>
+                        </div>
+                    </div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>المنصة</th>
+                                <th>تاريخ النشر</th>
+                                <th>المشاهدات</th>
+                                <th>التفاعل</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>تقرير الأوضاع السياسية</td>
+                                <td>الموقع الرسمي</td>
+                                <td>2024-01-15</td>
+                                <td>2,340</td>
+                                <td>156</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="publishing-form" class="tab-content">
+                    <h4>نشر محتوى جديد</h4>
+                    
+                    <form onsubmit="savePublishing(event)">
+                        <div class="form-group">
+                            <label>عنوان المحتوى:</label>
+                            <input type="text" id="publishTitle" required placeholder="أدخل عنوان المحتوى...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>المحتوى:</label>
+                            <textarea id="publishContent" required placeholder="أدخل المحتوى المراد نشره..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>منصة النشر:</label>
+                                <select id="publishPlatform" required>
+                                    <option value="">اختر المنصة</option>
+                                    <option value="الموقع الرسمي">الموقع الرسمي</option>
+                                    <option value="النشر الداخلي">النشر الداخلي</option>
+                                    <option value="النشرة الإخبارية">النشرة الإخبارية</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>نوع النشر:</label>
+                                <select id="publishType" required>
+                                    <option value="">اختر النوع</option>
+                                    <option value="فوري">فوري</option>
+                                    <option value="مجدول">مجدول</option>
+                                    <option value="مسودة">مسودة</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>مستوى الوصول:</label>
+                                <select id="publishAccess" required>
+                                    <option value="">اختر مستوى الوصول</option>
+                                    <option value="عام">عام</option>
+                                    <option value="داخلي">داخلي</option>
+                                    <option value="مقيد">مقيد</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>تاريخ النشر (للمجدول):</label>
+                                <input type="datetime-local" id="publishSchedule">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">نشر المحتوى</button>
+                    </form>
+                </div>
+            `);
+        }
+
+        // Create modal function
+        function createModal(id, title, content) {
+            const modal = document.createElement('div');
+            modal.id = `modal-${id}`;
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('${id}')">&times;</span>
+                    <h2>${title}</h2>
+                    ${content}
+                </div>
+            `;
+            
+            document.getElementById('modalsContainer').appendChild(modal);
+            return modal;
+        }
+
+        // Close modal function
+        function closeModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Switch tab function
+        function switchTab(event, tabId) {
+            // Remove active class from all tabs and tab contents
+            const tabs = event.target.parentElement.querySelectorAll('.tab');
+            const tabContents = event.target.closest('.modal-content').querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding content
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Save functions
+        function saveSocialMonitoring(event) {
+            event.preventDefault();
+            
+            const data = {
+                id: socialMonitoringData.length + 1,
+                date: document.getElementById('socialDate').value,
+                platform: document.getElementById('socialPlatform').value,
+                content: document.getElementById('socialContent').value,
+                link: document.getElementById('socialLink').value,
+                entity: document.getElementById('socialEntity').value,
+                file: document.getElementById('socialFile').value,
+                issue: document.getElementById('socialIssue').value,
+                track: document.getElementById('socialTrack').value,
+                dailySummary: document.getElementById('socialDailySummary').checked
+            };
+            
+            socialMonitoringData.push(data);
+            showNotification('تم حفظ بيانات رصد الشبكات الاجتماعية بنجاح!');
+            
+            // Reset form
+            event.target.reset();
+            document.getElementById('socialDate').value = new Date().toISOString().split('T')[0];
+            
+            // Update data list
+            document.getElementById('socialDataList').innerHTML = generateSocialDataTable();
+        }
+
+        function saveWebMonitoring(event) {
+            event.preventDefault();
+            
+            const data = {
+                id: webMonitoringData.length + 1,
+                date: document.getElementById('webDate').value,
+                website: document.getElementById('webSite').value,
+                title: document.getElementById('webTitle').value,
+                summary: document.getElementById('webSummary').value,
+                link: document.getElementById('webLink').value,
+                contentType: document.getElementById('webContentType').value,
+                entity: document.getElementById('webEntity').value,
+                file: document.getElementById('webFile').value,
+                issue: document.getElementById('webIssue').value,
+                track: document.getElementById('webTrack').value,
+                dailySummary: document.getElementById('webDailySummary').checked
+            };
+            
+            webMonitoringData.push(data);
+            showNotification('تم حفظ بيانات رصد المواقع الإلكترونية بنجاح!');
+            
+            // Reset form
+            event.target.reset();
+            document.getElementById('webDate').value = new Date().toISOString().split('T')[0];
+            
+            // Update data list
+            document.getElementById('webDataList').innerHTML = generateWebDataTable();
+        }
+
+        function saveTVMonitoring(event) {
+            event.preventDefault();
+            
+            const data = {
+                id: tvMonitoringData.length + 1,
+                date: document.getElementById('tvDate').value,
+                channel: document.getElementById('tvChannel').value,
+                program: document.getElementById('tvProgram').value,
+                time: document.getElementById('tvTime').value,
+                title: document.getElementById('tvTitle').value,
+                summary: document.getElementById('tvSummary').value,
+                programType: document.getElementById('tvProgramType').value,
+                duration: document.getElementById('tvDuration').value,
+                entity: document.getElementById('tvEntity').value,
+                file: document.getElementById('tvFile').value,
+                issue: document.getElementById('tvIssue').value,
+                track: document.getElementById('tvTrack').value,
+                dailySummary: document.getElementById('tvDailySummary').checked
+            };
+            
+            tvMonitoringData.push(data);
+            showNotification('تم حفظ بيانات رصد القنوات التلفزيونية بنجاح!');
+            
+            // Reset form
+            event.target.reset();
+            document.getElementById('tvDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function sendDirectives(event) {
+            event.preventDefault();
+            
+            const directive = {
+                id: directivesData.length + 1,
+                title: document.getElementById('directiveTitle').value,
+                content: document.getElementById('directiveContent').value,
+                track: document.getElementById('directiveTrack').value,
+                priority: document.getElementById('directivePriority').value,
+                analyst: currentUser.fullName,
+                date: new Date().toISOString().split('T')[0],
+                status: 'pending_manager_approval'
+            };
+            
+            directivesData.push(directive);
+            showNotification('تم إرسال الموجهة إلى القيادة للإقرار!');
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        function approveDirective(id) {
+            showNotification('تم اعتماد الموجهة وتحويلها إلى مسؤول المسار!');
+        }
+
+        function rejectDirective(id) {
+            const reason = prompt('أدخل سبب الرفض:');
+            if (reason) {
+                showNotification('تم رفض الموجهة وإرسال الملاحظات للمحلل!');
+            }
+        }
+
+        function requestExternalConsultation(id) {
+            const department = prompt('اختر الدائرة للاستشارة:\n1. الدائرة السياسية\n2. الدائرة القانونية\n3. الدائرة الاجتماعية\n\nأدخل رقم الدائرة:');
+            if (department) {
+                showNotification('تم إرسال طلب الاستشارة إلى الدائرة المختارة!');
+            }
+        }
+
+        function requestConsultation(event) {
+            event.preventDefault();
+            
+            const consultation = {
+                id: consultationRequests.length + 1,
+                title: document.getElementById('consultationTitle').value,
+                content: document.getElementById('consultationDetails').value,
+                department: document.getElementById('consultationDepartment').value,
+                priority: document.getElementById('consultationPriority').value,
+                deadline: document.getElementById('consultationDeadline').value,
+                requestedBy: currentUser.fullName,
+                date: new Date().toISOString().split('T')[0],
+                status: 'pending'
+            };
+            
+            consultationRequests.push(consultation);
+            showNotification('تم إرسال طلب الاستشارة بنجاح!');
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        function submitConsultationResponse(event, id) {
+            event.preventDefault();
+            
+            const response = document.getElementById('consultationResponse').value;
+            const recommendations = document.getElementById('consultationRecommendations').value;
+            
+            showNotification('تم إرسال الرد على الاستشارة بنجاح!');
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        function saveCostPlan(event) {
+            event.preventDefault();
+            
+            const cost = {
+                id: costsData.length + 1,
+                title: document.getElementById('costTitle').value,
+                description: document.getElementById('costDescription').value,
+                amount: document.getElementById('costAmount').value,
+                currency: document.getElementById('costCurrency').value,
+                startDate: document.getElementById('costStartDate').value,
+                endDate: document.getElementById('costEndDate').value,
+                manager: currentUser.fullName,
+                date: new Date().toISOString().split('T')[0],
+                status: 'approved'
+            };
+            
+            costsData.push(cost);
+            showNotification('تم حفظ خطة التكاليف بنجاح!');
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        function saveProduction(event) {
+            event.preventDefault();
+            showNotification('تم بدء الإنتاج بنجاح!');
+            event.target.reset();
+        }
+
+        function savePublishing(event) {
+            event.preventDefault();
+            showNotification('تم نشر المحتوى بنجاح!');
+            event.target.reset();
+        }
+
+        // Generate data tables
+        function generateSocialDataTable() {
+            if (socialMonitoringData.length === 0) {
+                return '<p>لا توجد بيانات محفوظة بعد.</p>';
+            }
+            
+            let table = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>المنصة</th>
+                            <th>المحتوى</th>
+                            <th>الكيان</th>
+                            <th>المسار</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            socialMonitoringData.forEach(item => {
+                table += `
+                    <tr>
+                        <td>${item.date}</td>
+                        <td>${item.platform}</td>
+                        <td>${item.content.substring(0, 50)}...</td>
+                        <td>${item.entity}</td>
+                        <td>${item.track}</td>
+                        <td>
+                            <button class="btn btn-warning" onclick="editSocialData(${item.id})">تعديل</button>
+                            <button class="btn btn-danger" onclick="deleteSocialData(${item.id})">حذف</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            table += '</tbody></table>';
+            return table;
+        }
+
+        function generateWebDataTable() {
+            if (webMonitoringData.length === 0) {
+                return '<p>لا توجد بيانات محفوظة بعد.</p>';
+            }
+            
+            let table = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>الموقع</th>
+                            <th>العنوان</th>
+                            <th>الكيان</th>
+                            <th>المسار</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            webMonitoringData.forEach(item => {
+                table += `
+                    <tr>
+                        <td>${item.date}</td>
+                        <td>${item.website}</td>
+                        <td>${item.title}</td>
+                        <td>${item.entity}</td>
+                        <td>${item.track}</td>
+                        <td>
+                            <button class="btn btn-warning" onclick="editWebData(${item.id})">تعديل</button>
+                            <button class="btn btn-danger" onclick="deleteWebData(${item.id})">حذف</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            table += '</tbody></table>';
+            return table;
+        }
+
+        function generateTVDataTable() {
+            if (tvMonitoringData.length === 0) {
+                return '<p>لا توجد بيانات محفوظة بعد.</p>';
+            }
+            
+            let table = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>القناة</th>
+                            <th>البرنامج</th>
+                            <th>العنوان</th>
+                            <th>المسار</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            tvMonitoringData.forEach(item => {
+                table += `
+                    <tr>
+                        <td>${item.date}</td>
+                        <td>${item.channel}</td>
+                        <td>${item.program}</td>
+                        <td>${item.title}</td>
+                        <td>${item.track}</td>
+                        <td>
+                            <button class="btn btn-warning" onclick="editTVData(${item.id})">تعديل</button>
+                            <button class="btn btn-danger" onclick="deleteTVData(${item.id})">حذف</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            table += '</tbody></table>';
+            return table;
+        }
+
+        function generateAnalysisTable() {
+            return `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>العنوان</th>
+                            <th>المحلل</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                            <th>الأولوية</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>تحليل الوضع السياسي الحالي</td>
+                            <td>محلل المحتوى</td>
+                            <td>2024-01-15</td>
+                            <td><span class="status-badge status-pending">قيد المراجعة</span></td>
+                            <td>عالية</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Edit and delete functions
+        function editSocialData(id) {
+            showNotification('ميزة التعديل قيد التطوير');
+        }
+
+        function deleteSocialData(id) {
+            if (confirm('هل أنت متأكد من حذف هذا العنصر؟')) {
+                socialMonitoringData = socialMonitoringData.filter(item => item.id !== id);
+                document.getElementById('socialDataList').innerHTML = generateSocialDataTable();
+                showNotification('تم حذف العنصر بنجاح');
+            }
+        }
+
+        function editWebData(id) {
+            showNotification('ميزة التعديل قيد التطوير');
+        }
+
+        function deleteWebData(id) {
+            if (confirm('هل أنت متأكد من حذف هذا العنصر؟')) {
+                webMonitoringData = webMonitoringData.filter(item => item.id !== id);
+                document.getElementById('webDataList').innerHTML = generateWebDataTable();
+                showNotification('تم حذف العنصر بنجاح');
+            }
+        }
+
+        function editTVData(id) {
+            showNotification('ميزة التعديل قيد التطوير');
+        }
+
+        function deleteTVData(id) {
+            if (confirm('هل أنت متأكد من حذف هذا العنصر؟')) {
+                tvMonitoringData = tvMonitoringData.filter(item => item.id !== id);
+                document.getElementById('tvDataList').innerHTML = generateTVDataTable();
+                showNotification('تم حذف العنصر بنجاح');
+            }
+        }
+
+        // Other functions
+        function startAnalysis(id) {
+            showNotification('تم بدء التحليل');
+        }
+
+        function startProduction(id) {
+            showNotification('تم بدء الإنتاج');
+        }
+
+        function publishContent(id) {
+            showNotification('تم نشر المحتوى');
+        }
+
+        function createCostPlan(id) {
+            showNotification('تم إنشاء خطة التكاليف');
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            // Play notification sound
+            playNotificationSound();
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Play notification sound
+        function playNotificationSound() {
+            // Create audio context for notification sound
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.remove();
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default for date inputs
+            const today = new Date().toISOString().split('T')[0];
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                if (!input.value) {
+                    input.value = today;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
