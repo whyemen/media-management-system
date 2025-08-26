@@ -11,6 +11,24 @@
             box-sizing: border-box;
         }
 
+        /* إخفاء جميع الأقسام بشكل افتراضي */
+        .dashboard,
+        #socialMediaSection,
+        #digitalContentSection,
+        #tvBroadcastSection,
+        #dataAnalysisSection,
+        #contentPlanningSection,
+        #publishingSection,
+        #consultingSection,
+        #reportsSection {
+            display: none;
+        }
+
+        /* إظهار قسم تسجيل الدخول فقط */
+        #loginSection {
+            display: block;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
